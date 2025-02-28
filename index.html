@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Invoice Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Invoice Generator</h1>
+    </header>
+
+    <main>
+        <!-- Invoice Form -->
+        <section id="invoice-form">
+            <h2>Create Invoice</h2>
+            <form id="invoiceForm">
+                <label for="customerName">Customer Name</label>
+                <input type="text" id="customerName" placeholder="Enter customer's name" required>
+
+                <label for="customerEmail">Customer Email</label>
+                <input type="email" id="customerEmail" placeholder="Enter customer's email" required>
+
+                <label for="customerAddress">Customer Address</label>
+                <textarea id="customerAddress" placeholder="Enter customer's address" required></textarea>
+
+                <label for="customerContact">Customer Contact</label>
+                <input type="text" id="customerContact" placeholder="Enter customer's contact number" required>
+
+                <label for="invoiceDate">Invoice Date</label>
+                <input type="date" id="invoiceDate" required>
+
+                <label for="dueDate">Due Date</label>
+                <input type="date" id="dueDate" required>
+
+                <h3>Items</h3>
+                <table id="itemsTable">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <button type="button" id="addItem">+ Add Item</button>
+
+                <h3>Totals</h3>
+                <p>Subtotal: <span id="subtotal">$0.00</span></p>
+                <p>Tax (10%): <span id="tax">$0.00</span></p>
+                <p><strong>Total: <span id="total">$0.00</span></strong></p>
+
+                <button type="submit">Generate Invoice</button>
+            </form>
+        </section>
+
+        <!-- Invoice List -->
+        <section id="invoices-list">
+            <h2>Saved Invoices</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Invoice ID</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="invoiceTableBody">
+                    <!-- Invoices will be added dynamically -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
