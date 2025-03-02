@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Handle form submission to save invoice
     invoiceForm.addEventListener("submit", function (event) {
         event.preventDefault();
-
+    
         const customerName = document.getElementById("customerName").value;
         const customerEmail = document.getElementById("customerEmail").value;
         const customerAddress = document.getElementById("customerAddress").value;
@@ -66,12 +66,22 @@ document.addEventListener("DOMContentLoaded", function () {
         const subtotal = parseFloat(subtotalSpan.textContent);
         const tax = parseFloat(taxSpan.textContent);
         const total = parseFloat(totalSpan.textContent);
-
+    
         if (!customerName || !customerEmail || !customerAddress || !customerContact || !invoiceDate || !dueDate || subtotal <= 0) {
             alert("Please fill all fields and add items.");
             return;
         }
-
+    
+        // Collect items from the table
+        const items = [];
+        document.querySelectorAll("#itemsTable tbody tr").forEach(row => {
+            const description = row.querySelector(".description").value;
+            const quantity = parseFloat(row.querySelector(".quantity").value);
+            const price = parseFloat(row.querySelector(".price").value);
+            const total = quantity * price;
+            items.push({ description, quantity, price, total });
+        });
+    
         const invoice = {
             id: invoiceCount++,
             customerName,
@@ -82,9 +92,10 @@ document.addEventListener("DOMContentLoaded", function () {
             dueDate,
             subtotal,
             tax,
-            total
+            total,
+            items // Add items to the invoice
         };
-
+    
         invoices.push(invoice);
         displayInvoices();
         invoiceForm.reset();
@@ -133,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function printInvoice(invoiceId) {
         const invoice = invoices.find(inv => inv.id === invoiceId);
         if (!invoice) return;
-
+    
         // Create a printable HTML template for the invoice
         const printWindow = window.open("", "_blank");
         printWindow.document.write(`
@@ -145,9 +156,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         h1 { color: #007bff; }
                         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
                         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                        th { background-color: #007bff; color: white; }
+                        th { background-color: transparent; color: #000; } /* Remove blue background */
                         .totals { margin-top: 20px; font-size: 1.2em; }
                         .customer-details { margin-bottom: 20px; }
+                        @media print {
+                            th { background-color: transparent !important; color: #000 !important; } /* Ensure no background in print */
+                        }
                     </style>
                 </head>
                 <body>
@@ -170,7 +184,14 @@ document.addEventListener("DOMContentLoaded", function () {
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Items will be added dynamically -->
+                            ${invoice.items.map(item => `
+                                <tr>
+                                    <td>${item.description}</td>
+                                    <td>${item.quantity}</td>
+                                    <td>$${item.price.toFixed(2)}</td>
+                                    <td>$${item.total.toFixed(2)}</td>
+                                </tr>
+                            `).join("")}
                         </tbody>
                     </table>
                     <div class="totals">
